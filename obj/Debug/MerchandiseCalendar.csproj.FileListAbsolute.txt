@@ -1,0 +1,5 @@
+c:\users\dan\documents\visual studio 2013\Projects\MerchandiseCalendar\MerchandiseCalendar\bin\Debug\MerchandiseCalendar.dll
+c:\users\dan\documents\visual studio 2013\Projects\MerchandiseCalendar\MerchandiseCalendar\bin\Debug\MerchandiseCalendar.pdb
+c:\users\dan\documents\visual studio 2013\Projects\MerchandiseCalendar\MerchandiseCalendar\obj\Debug\MerchandiseCalendar.csprojResolveAssemblyReference.cache
+c:\users\dan\documents\visual studio 2013\Projects\MerchandiseCalendar\MerchandiseCalendar\obj\Debug\MerchandiseCalendar.dll
+c:\users\dan\documents\visual studio 2013\Projects\MerchandiseCalendar\MerchandiseCalendar\obj\Debug\MerchandiseCalendar.pdb
