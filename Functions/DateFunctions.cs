@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace MerchandiseCalendar
@@ -107,6 +108,107 @@ namespace MerchandiseCalendar
             var weekRange = GetAllDatesBetween(GetWeekDateRange(GetWeek(date), year, restated));
             // Return the date that falls on the same day of the week as the date.
             return weekRange.First(x => x.DayOfWeek == date.DayOfWeek);
+        }
+
+        /// <summary>
+        /// Retrieves the day of the year
+        /// </summary>
+        /// <param name="date">
+        /// The merchandise week you wish to get date range information for.
+        /// </param>
+        /// <param name="restated">
+        /// Set to true if you want the time period adjusted forward in 53 week years for comparability to 52 week years.
+        /// </param>
+        /// <returns>
+        /// int
+        /// </returns>
+        public static int GetDayOfYear(DateTime date,
+            bool restated = false)
+        {
+            int week = GetWeek(date, restated);
+
+            int dayOfWeek = ((int)date.DayOfWeek + 1);
+            
+            return (((week - 1) * 7) + dayOfWeek);
+        }
+
+        /// <summary>
+        /// Retrieves all Merchandise Dates within the dateRange
+        /// </summary>
+        /// <param name="dateRange">
+        /// The date range you wish to get the list of dates for.
+        /// </param>
+        /// <returns>
+        /// IEnumerable&lt;MerchandiseDate&gt;
+        /// </returns>
+        public static IEnumerable<MerchandiseDate> GetMerchandiseDatesBetween(DateRange dateRange)
+        {
+            List<MerchandiseDate> merchandiseDateList = new List<MerchandiseDate>();
+            
+            for (DateTime date = dateRange.StartDate; date <= dateRange.EndDate; date = date.AddDays(1))
+            {
+                int week = DateFunctions.GetWeek(date);
+
+                int period = DateFunctions.GetPeriod(week);
+
+                int month = (period + 1);
+
+                if (month == 13)
+                { month = 1; }
+
+                Quarter quarter = DateFunctions.GetQuarter(date);
+                
+                MerchandiseDate merchandiseDate = new MerchandiseDate();
+                merchandiseDate.Date = date;
+                merchandiseDate.DayOfYear = DateFunctions.GetDayOfYear(date);
+                merchandiseDate.Period = DateFunctions.GetPeriod(week);
+                merchandiseDate.PeriodName = System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month);
+                merchandiseDate.Quarter = quarter.Number;
+                merchandiseDate.QuarterName = quarter.Name;
+                merchandiseDate.Week = week;
+                merchandiseDate.Year = DateFunctions.GetYear(date);
+
+                merchandiseDateList.Add(merchandiseDate);
+            }
+
+            return merchandiseDateList;
+        }
+
+        /// <summary>
+        /// Retrieves all Merchandise Dates between the startDate and endDate
+        /// </summary>
+        /// <param name="startDate">
+        /// The start date.
+        /// </param>
+        /// <param name="endDate">
+        /// The end date.
+        /// </param>
+        /// <returns>
+        /// IEnumerable&lt;MerchandiseDate&gt;
+        /// </returns>
+        public static IEnumerable<MerchandiseDate> GetMerchandiseDatesBetween(DateTime startDate, DateTime endDate)
+        {
+            DateRange dateRange = new DateRange();
+            dateRange.EndDate = endDate;
+            dateRange.StartDate = startDate;
+
+            return GetMerchandiseDatesBetween(dateRange);
+        }
+
+        /// <summary>
+        /// Retrieves all Merchandise Dates within the Merchandise Year
+        /// </summary>
+        /// <param name="year">
+        /// The year you wish to get the list of dates for.
+        /// </param>
+        /// <returns>
+        /// IEnumerable&lt;MerchandiseDate&gt;
+        /// </returns>
+        public static IEnumerable<MerchandiseDate> GetMerchandiseDatesByYear(int year)
+        {
+            MerchYear merchYear = new MerchYear(year);
+
+            return GetMerchandiseDatesBetween(merchYear.DateRange);
         }
 
         /// <summary>
