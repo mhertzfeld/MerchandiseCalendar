@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DayOfTheYear.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="Functions\DateFunctions.cs" />
     <Compile Include="Functions\PeriodFunctions.cs" />
@@ -51,6 +52,7 @@
     <Compile Include="Functions\WeekFunctions.cs" />
     <Compile Include="Functions\YearFunctions.cs" />
     <Compile Include="MerchandiseDate.cs" />
+    <Compile Include="MerchandiseDates.cs" />
     <Compile Include="MerchCalendarDates.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

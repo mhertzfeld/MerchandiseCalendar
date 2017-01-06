@@ -133,45 +133,61 @@ namespace MerchandiseCalendar
         }
 
         /// <summary>
+        /// Retrieves the Merchandise Dates for the Date
+        /// </summary>
+        /// <param name="_DateTime">
+        /// The date you wish to get the list of dates for.
+        /// </param>
+        /// <returns>
+        /// MerchandiseDate
+        /// </returns>
+        public static MerchandiseDate GetMerchandiseDate(DateTime _DateTime)
+        {
+            int _Week = DateFunctions.GetWeek(_DateTime);
+
+            int _Period = DateFunctions.GetPeriod(_Week);
+
+            int _Month = (_Period + 1);
+
+            if (_Month == 13)
+            { _Month = 1; }
+
+            Quarter _Quarter = DateFunctions.GetQuarter(_DateTime);
+
+            MerchandiseDate _MerchandiseDate = new MerchandiseDate();
+            _MerchandiseDate.Date = _DateTime;
+            _MerchandiseDate.DayOfYear = DateFunctions.GetDayOfYear(_DateTime);
+            _MerchandiseDate.Period = DateFunctions.GetPeriod(_Week);
+            _MerchandiseDate.PeriodName = System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(_Month);
+            _MerchandiseDate.Quarter = _Quarter.Number;
+            _MerchandiseDate.QuarterName = _Quarter.Name;
+            _MerchandiseDate.Week = _Week;
+            _MerchandiseDate.Year = DateFunctions.GetYear(_DateTime);
+
+            return _MerchandiseDate;
+        }
+
+        /// <summary>
         /// Retrieves all Merchandise Dates within the dateRange
         /// </summary>
-        /// <param name="dateRange">
+        /// <param name="_DateRange">
         /// The date range you wish to get the list of dates for.
         /// </param>
         /// <returns>
         /// IEnumerable&lt;MerchandiseDate&gt;
         /// </returns>
-        public static IEnumerable<MerchandiseDate> GetMerchandiseDatesBetween(DateRange dateRange)
+        public static IEnumerable<MerchandiseDate> GetMerchandiseDatesBetween(DateRange _DateRange)
         {
-            List<MerchandiseDate> merchandiseDateList = new List<MerchandiseDate>();
+            List<MerchandiseDate> _MerchandiseDateList = new List<MerchandiseDate>();
             
-            for (DateTime date = dateRange.StartDate; date <= dateRange.EndDate; date = date.AddDays(1))
+            for (DateTime _Date = _DateRange.StartDate; _Date <= _DateRange.EndDate; _Date = _Date.AddDays(1))
             {
-                int week = DateFunctions.GetWeek(date);
+                MerchandiseDate _MerchandiseDate = GetMerchandiseDate(_Date);
 
-                int period = DateFunctions.GetPeriod(week);
-
-                int month = (period + 1);
-
-                if (month == 13)
-                { month = 1; }
-
-                Quarter quarter = DateFunctions.GetQuarter(date);
-                
-                MerchandiseDate merchandiseDate = new MerchandiseDate();
-                merchandiseDate.Date = date;
-                merchandiseDate.DayOfYear = DateFunctions.GetDayOfYear(date);
-                merchandiseDate.Period = DateFunctions.GetPeriod(week);
-                merchandiseDate.PeriodName = System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month);
-                merchandiseDate.Quarter = quarter.Number;
-                merchandiseDate.QuarterName = quarter.Name;
-                merchandiseDate.Week = week;
-                merchandiseDate.Year = DateFunctions.GetYear(date);
-
-                merchandiseDateList.Add(merchandiseDate);
+                _MerchandiseDateList.Add(_MerchandiseDate);
             }
 
-            return merchandiseDateList;
+            return _MerchandiseDateList;
         }
 
         /// <summary>
