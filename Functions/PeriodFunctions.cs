@@ -32,16 +32,12 @@ namespace MerchandiseCalendar
         /// <param name="date">
         /// Date you wish to get the merchandise period from.
         /// </param>
-        /// <param name="restated">
-        /// Set to true if you want the time period adjusted forward in 53 week years for comparability to 52 week years.
-        /// </param>
         /// <returns>
         /// integer
         /// </returns>
-        public static int GetPeriod(DateTime date,
-            bool restated = false)
+        public static int GetPeriod(DateTime date)
         {
-            return GetPeriod(GetWeek(date, restated));
+            return GetPeriod(GetWeek(date));
         }
 
         /// <summary>
@@ -101,15 +97,11 @@ namespace MerchandiseCalendar
         /// <param name="year">
         /// The merchandise year you wish to get the date range information for.
         /// </param>
-        /// <param name="restated">
-        /// Set to true if you want the time period adjusted forward in 53 week years for comparability to 52 week years.
-        /// </param>
         /// <returns>
         /// DateRange
         /// </returns>
         public static DateRange GetPeriodDateRange(int period,
-            int year,
-            bool restated = false)
+            int year)
         {
             // Make sure it's a valid period.
             ValidatePeriod(period);
@@ -124,10 +116,6 @@ namespace MerchandiseCalendar
             {
                 weeksToSkip += WeeksInPeriod(i);
             }
-
-            // Add an extra week if it's a 53 week year and restated is true.
-            if (merchYear.ExtraWeek && restated)
-                weeksToSkip += 1;
 
             var merchYearStartDate = merchYear.DateRange.StartDate;
             var weeksInPeriod = WeeksInPeriod(period);
@@ -151,19 +139,15 @@ namespace MerchandiseCalendar
         /// <param name="date">
         /// The date you wish to get the date range information for.
         /// </param>
-        /// <param name="restated">
-        /// Set to true if you want the time period adjusted forward in 53 week years for comparability to 52 week years.
-        /// </param>
         /// <returns>
         /// DateRange
         /// </returns>
-        public static DateRange GetPeriodDateRange(DateTime date,
-            bool restated = false)
+        public static DateRange GetPeriodDateRange(DateTime date)
         {
-            var period = GetPeriod(date, restated);
+            var period = GetPeriod(date);
             var year = GetYear(date);
 
-            return GetPeriodDateRange(period, year, restated);
+            return GetPeriodDateRange(period, year);
         }
 
         /// <summary>
@@ -172,18 +156,15 @@ namespace MerchandiseCalendar
         /// <param name="date">
         /// The date representing the end of the "to date" time span.
         /// </param>
-        /// <param name="restated">
-        /// Set to true if you want the time period adjusted forward in 53 week years for comparability to 52 week years.
-        /// </param>
         /// <returns>
         /// DateRange
         /// </returns>
         public static DateRange GetPeriodToDate(DateTime date,
             bool restated = false)
         {
-            var period = GetPeriod(date, restated);
+            var period = GetPeriod(date);
             var year = GetYear(date);
-            var startDate = GetPeriodDateRange(period, year, restated).StartDate;
+            var startDate = GetPeriodDateRange(period, year).StartDate;
             
             return new DateRange
             {

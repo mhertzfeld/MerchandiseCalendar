@@ -94,15 +94,12 @@ namespace MerchandiseCalendar
         /// <param name="date">
         /// The date you wish to get quarter information for.
         /// </param>
-        /// <param name="restated">
-        /// Set to true if you want the time period adjusted forward in 53 week years for comparability to 52 week years.
-        /// </param>
         /// <returns>
         /// Quarter
         /// </returns>
-        public static Quarter GetQuarter(DateTime date, bool restated = false)
+        public static Quarter GetQuarter(DateTime date)
         {
-            var period = GetPeriod(date, restated);
+            var period = GetPeriod(date);
             var year = GetYear(date);
 
             return GetQuarter(period, year);

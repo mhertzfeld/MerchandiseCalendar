@@ -11,14 +11,10 @@ namespace MerchandiseCalendar
         /// <param name="date">
         /// Date you wish to get the merchandise week from.
         /// </param>
-        /// <param name="restated">
-        /// Set to true if you want the time period adjusted forward in 53 week years for comparability to 52 week years.
-        /// </param>
         /// <returns>
         /// integer
         /// </returns>
-        public static int GetWeek(DateTime date,
-            bool restated = false)
+        public static int GetWeek(DateTime date)
         {
             // Get information about the merchandise year.
             var merchYear = new MerchYear(GetYear(date));
@@ -26,11 +22,7 @@ namespace MerchandiseCalendar
             var timeSpan = date - merchYear.DateRange.StartDate;
             // Gets the number of days + 1 divided by 7, rounded up to the nearest whole number.
             var returnValue = (int)(Math.Ceiling((decimal)(timeSpan.Days + 1) / 7));
-
-            // If the merch year has an extra week and the time period is restated for comparison, subtract one.
-            if (merchYear.ExtraWeek && restated)
-                returnValue -= 1;
-
+            
             return returnValue;
         }
 
@@ -43,25 +35,17 @@ namespace MerchandiseCalendar
         /// <param name="year">
         /// The merchandise year you wish to get the date range information for.
         /// </param>
-        /// <param name="restated">
-        /// Set to true if you want the time period adjusted forward in 53 week years for comparability to 52 week years.
-        /// </param>
         /// <returns>
         /// DateRange
         /// </returns>
         public static DateRange GetWeekDateRange(int week,
-            int year,
-            bool restated = false)
+            int year)
         {
             // Make sure it's a valid week.
             ValidateWeek(week);
 
             // Get information about the merchandise year.
             var merchYear = GetMerchYearInfo(year);
-
-            // If the year has an extra week and the time period is being restated for comparison, add one.
-            if (merchYear.ExtraWeek && restated)
-                week += 1;
 
             // Calculate values for the start and end dates.
             var startDate = merchYear.DateRange.StartDate.AddDays(7 * (week - 1));
@@ -80,16 +64,12 @@ namespace MerchandiseCalendar
         /// <param name="date">
         /// The date you wish to get date range information for.
         /// </param>
-        /// <param name="restated">
-        /// Set to true if you want the time period adjusted forward in 53 week years for comparability to 52 week years.
-        /// </param>
         /// <returns>
         /// DateRange
         /// </returns>
-        public static DateRange GetWeekDateRange(DateTime date,
-            bool restated = false)
+        public static DateRange GetWeekDateRange(DateTime date)
         {
-            return GetWeekDateRange(GetWeek(date, restated), GetYear(date), restated);
+            return GetWeekDateRange(GetWeek(date), GetYear(date));
         }
 
         /// <summary>
@@ -98,19 +78,15 @@ namespace MerchandiseCalendar
         /// <param name="date">
         /// The date representing the end of the "to date" time span.
         /// </param>
-        /// <param name="restated">
-        /// Set to true if you want the time period adjusted forward in 53 week years for comparability to 52 week years.
-        /// </param>
         /// <returns>
         /// DateRange
         /// </returns>
-        public static DateRange GetWeekToDate(DateTime date,
-            bool restated = false)
+        public static DateRange GetWeekToDate(DateTime date)
         {
-            var week = GetWeek(date, restated);
+            var week = GetWeek(date);
             var year = GetYear(date);
             // Only need to calculate the start date of the week range.
-            var startDate = GetWeekDateRange(week, year, restated).StartDate;
+            var startDate = GetWeekDateRange(week, year).StartDate;
 
             return new DateRange
             {
@@ -131,23 +107,19 @@ namespace MerchandiseCalendar
         /// <param name="dayOfWeek">
         /// The day of the week you wish to get the information for.
         /// </param>
-        /// <param name="restated">
-        /// Set to true if you want the time period adjusted forward in 53 week years for comparability to 52 week years.
-        /// </param>
         /// <returns>
         /// DateRange
         /// </returns>
         public static DateRange GetWeekToDate(int week,
             int year,
-            DayOfWeek dayOfWeek,
-            bool restated = false)
+            DayOfWeek dayOfWeek)
         {
             // Get a list of all dates between the date range for the week based on week number and year.
-            var weekRange = GetAllDatesBetween(GetWeekDateRange(week, year, restated));
+            var weekRange = GetAllDatesBetween(GetWeekDateRange(week, year));
             // Get the first date in the list that matches the day of the week.
             var date = weekRange.First(x => x.DayOfWeek == dayOfWeek);
 
-            return GetWeekToDate(date, restated);
+            return GetWeekToDate(date);
         } 
     }
 }

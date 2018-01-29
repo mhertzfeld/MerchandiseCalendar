@@ -45,17 +45,13 @@ namespace MerchandiseCalendar
         /// <param name="date">
         /// The date representing the end of the "to date" time span.
         /// </param>
-        /// <param name="restated">
-        /// Set to true if you want the time period adjusted forward in 53 week years for comparability to 52 week years.
-        /// </param>
         /// <returns>
         /// DateRange
         /// </returns>
-        public static DateRange GetYearToDate(DateTime date,
-            bool restated = false)
+        public static DateRange GetYearToDate(DateTime date)
         {
             var year = GetYear(date);
-            var startDate = GetPeriodDateRange(1, year, restated).StartDate;
+            var startDate = GetPeriodDateRange(1, year).StartDate;
             
             return new DateRange
             {

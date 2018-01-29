@@ -94,18 +94,48 @@ namespace MerchandiseCalendar
         /// <param name="year">
         /// The year you wish to get the information for.
         /// </param>
-        /// <param name="restated">
-        /// Set to false if you don't want 53 week years restated for comparability. Not recommended.
+        /// <param name="_Week53Options">
+        /// _Week53Options
         /// </param>
         /// <returns>
         /// DateTime
         /// </returns>
-        public static DateTime GetComparisonDay(DateTime date,
+        public static DateTime? GetComparisonDay(DateTime date,
             int year,
-            bool restated = true)
+            Week53Options _Week53Options)
         {
+            Int32 _Week = GetWeek(date);
+
+            if (_Week == 53)
+            {
+                switch (_Week53Options)
+                {
+                    case Week53Options.AddWeek:
+
+                        _Week = 1;
+
+                        year = year + 1;
+
+                        break;
+
+                    case Week53Options.NonComp:
+
+                        return null;
+
+                    case Week53Options.SubtractWeek:
+
+                        _Week = 52;
+
+                        break;
+
+                    default:
+
+                        throw new ArgumentOutOfRangeException("_Week53Options");
+                }
+            }
+
             // Get list of dates for the same merch week from the inputted year.
-            var weekRange = GetAllDatesBetween(GetWeekDateRange(GetWeek(date), year, restated));
+            var weekRange = GetAllDatesBetween(GetWeekDateRange(GetWeek(date), year));
             // Return the date that falls on the same day of the week as the date.
             return weekRange.First(x => x.DayOfWeek == date.DayOfWeek);
         }
@@ -122,10 +152,9 @@ namespace MerchandiseCalendar
         /// <returns>
         /// int
         /// </returns>
-        public static int GetDayOfYear(DateTime date,
-            bool restated = false)
+        public static int GetDayOfYear(DateTime date)
         {
-            int week = GetWeek(date, restated);
+            int week = GetWeek(date);
 
             int dayOfWeek = ((int)date.DayOfWeek + 1);
             

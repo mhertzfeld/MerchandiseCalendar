@@ -10,16 +10,12 @@ namespace MerchandiseCalendar
         /// <param name="date">
         /// Date you wish to get the season for.
         /// </param>
-        /// <param name="restated">
-        /// Set to true if you want the time period adjusted forward in 53 week years for comparability to 52 week years.
-        /// </param>
         /// <returns>
         /// string
         /// </returns>
-        public static string GetSeason(DateTime date,
-            bool restated = false)
+        public static string GetSeason(DateTime date)
         {
-            return GetSeason(GetWeek(date, restated));
+            return GetSeason(GetWeek(date));
         }
 
         /// <summary>
@@ -46,15 +42,11 @@ namespace MerchandiseCalendar
         /// <param name="year">
         /// The year of the season you wish to get the date range for.
         /// </param>
-        /// <param name="restated">
-        /// Set to true if you want the time period adjusted forward in 53 week years for comparability to 52 week years.
-        /// </param>
         /// <returns>
         /// DateRange
         /// </returns>
         public static DateRange GetSeasonDateRange(Season season,
-            int year,
-            bool restated = false)
+            int year)
         {
             // Default to Spring season, weeks 1 through 26.
             var startWeek = 1;
@@ -62,21 +54,16 @@ namespace MerchandiseCalendar
 
             if (season == Season.Fall)
             {
-                // Check whether the year has a 53rd week.
-                var extraWeek = GetMerchYearInfo(year).ExtraWeek;
-
                 startWeek = 27;
-
-                /* If the year has an extra week and the time period has not been restated, end on 
-                 * 53rd week, otherwise end on 52nd. */
-                if (extraWeek && !restated)
+                
+                if (GetMerchYearInfo(year).ExtraWeek)
                     endWeek = 53;
                 else
                     endWeek = 52;
             }
 
-            var startDate = GetWeekDateRange(startWeek, year, restated).StartDate;
-            var endDate = GetWeekDateRange(endWeek, year, restated).EndDate.ToEndOfDay();
+            var startDate = GetWeekDateRange(startWeek, year).StartDate;
+            var endDate = GetWeekDateRange(endWeek, year).EndDate.ToEndOfDay();
 
             return new DateRange
             {
@@ -91,18 +78,14 @@ namespace MerchandiseCalendar
         /// <param name="date">
         /// The season you wish to get the date range for.
         /// </param>
-        /// <param name="restated">
-        /// Set to true if you want the time period adjusted forward in 53 week years for comparability to 52 week years.
-        /// </param>
         /// <returns>
         /// DateRange
         /// </returns>
-        public static DateRange GetSeasonDateRange(DateTime date,
-            bool restated = false)
+        public static DateRange GetSeasonDateRange(DateTime date)
         {
             // Get the season for the date passed in.
             Season season;
-            var seasonString = GetSeason(date, restated);
+            var seasonString = GetSeason(date);
             var seasonParsed = Enum.TryParse(seasonString, out season);
 
             // Check if it's a valid season.
@@ -111,7 +94,7 @@ namespace MerchandiseCalendar
 
             var year = GetYear(date);
 
-            return GetSeasonDateRange(season, year, restated);
+            return GetSeasonDateRange(season, year);
         }
     }
 }
